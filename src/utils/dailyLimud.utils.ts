@@ -11,40 +11,48 @@ export async function getDailyTorah(date: Date): Promise<pasukTorahType[]> {
     const firstPasukInParashaIndex = torah.findIndex((pasuk) =>
         pasuk.parasha.includes(parasha)
     );
+    let lastPasukInParashaIndex = torah.findIndex(
+        (pasuk, index) =>
+            index > firstPasukInParashaIndex && !pasuk.parasha.includes(parasha)
+    );
+    if (lastPasukInParashaIndex === -1) {
+        lastPasukInParashaIndex = torah.length;
+    }
 
     const day = date.getDay();
+	if (day === 6) {
+		return [];
+	}
 
-    let firstIndex;
-    let lastIndex;
-    if (day === 0) {
-        firstIndex = firstPasukInParashaIndex;
-        lastIndex = firstIndex + 6;
-    } else if (day === 1) {
-        firstIndex = firstPasukInParashaIndex + 6;
-        lastIndex = firstIndex + 4;
-    } else if (day === 2) {
-        firstIndex = firstPasukInParashaIndex + 10;
-        lastIndex = firstIndex + 5;
-    } else if (day === 3) {
-        firstIndex = firstPasukInParashaIndex + 15;
-        lastIndex = firstIndex + 6;
-    } else if (day === 4) {
-        firstIndex = firstPasukInParashaIndex + 21;
-        lastIndex = firstIndex + 5;
-    } else {
-        return [];
-    }
+    let firstIndex = [
+        firstPasukInParashaIndex,
+        firstPasukInParashaIndex + 6,
+        firstPasukInParashaIndex + 10,
+        firstPasukInParashaIndex + 15,
+        firstPasukInParashaIndex + 21,
+        firstPasukInParashaIndex,
+        0,
+    ][day];
+
+    let lastIndex = [
+        firstPasukInParashaIndex + 6,
+        firstPasukInParashaIndex + 10,
+        firstPasukInParashaIndex + 15,
+        firstPasukInParashaIndex + 21,
+        firstPasukInParashaIndex + 26,
+        lastPasukInParashaIndex,
+        0,
+    ][day];
 
     const psukim: pasukTorahType[] = [];
     let currentIndex = firstIndex;
     for (let i = firstIndex; i < lastIndex; i++) {
-        let pasuk = torah[currentIndex];
-        if (!pasuk.parasha.includes(parasha)) {
+        if (currentIndex >= lastPasukInParashaIndex) {
             currentIndex = firstPasukInParashaIndex;
-            pasuk = torah[currentIndex];
         }
+        let pasuk = torah[currentIndex];
         psukim.push(pasuk);
-		currentIndex++;
+        currentIndex++;
     }
 
     return psukim;
@@ -54,6 +62,8 @@ export function getDailyNach(
     date: Date,
     nachType: "prophets" | "writings"
 ): pasukNachType[] {
+	// TODO: return the haftarah on friday
+	
     const nachObject = nachType === "prophets" ? prophets : writings;
 
     const psukimCountArray = [6, 4, 5, 6, 5, 0, 0];
