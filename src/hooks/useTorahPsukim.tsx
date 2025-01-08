@@ -5,7 +5,7 @@ import { getDailyTorah } from "../utils/dailyLimud.utils";
 type Props = { date: Date | null };
 
 export default function useTorahPsukim({ date }: Props) {
-    const [psukim, setPsukim] = React.useState<pasukTorahType[] | null>([]);
+    const [psukim, setPsukim] = React.useState<pasukTorahType[]>([]);
     const [loading, setLoading] = React.useState<boolean>(true);
     const [error, setError] = React.useState<string | null>(null);
 

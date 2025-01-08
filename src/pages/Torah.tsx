@@ -15,7 +15,7 @@ export default function Torah({}: Props) {
         return <div>Error: {error}</div>;
     }
 
-    if (!psukim) {
+    if (psukim.length === 0) {
         return <div>No psukim</div>;
     }
 
