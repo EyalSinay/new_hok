@@ -62,7 +62,12 @@ export function getDailyNach(
     date: Date,
     nachType: "prophets" | "writings"
 ): pasukNachType[] {
-	// TODO: return the haftarah on friday
+	// TODO: Return the haftarah on friday
+    // TODO: We can save work time by calculating the start index using a mathematical function that depends on the number of weeks that have passed and what day it is today.
+
+    if (date <= startTime) {
+        return [];
+    }
 	
     const nachObject = nachType === "prophets" ? prophets : writings;
 
